@@ -1,44 +1,62 @@
-provider "google" {
-  project = var.project_id
-  region  = var.region
-}
+module "vpc" {
+    source  = "terraform-google-modules/network/google"
+    version = "~> 6.0"
 
-module "test_vpc_module" {
-  source       = "terraform-google-modules/network/google"
-  version      = "~> 3.2.0"
-  project_id   = var.project_id
-  network_name = var.network_name
+    project_id   = "<PROJECT ID>"
+    network_name = "example-vpc"
+    routing_mode = "GLOBAL"
 
-  subnets = [
-    {
-      subnet_name   = "subnet-01"
-      subnet_ip     = "10.10.10.0/24"
-      subnet_region = var.region
+    subnets = [
+        {
+            subnet_name           = "subnet-01"
+            subnet_ip             = "10.10.10.0/24"
+            subnet_region         = "us-west1"
+        },
+        {
+            subnet_name           = "subnet-02"
+            subnet_ip             = "10.10.20.0/24"
+            subnet_region         = "us-west1"
+            subnet_private_access = "true"
+            subnet_flow_logs      = "true"
+            description           = "This subnet has a description"
+        },
+        {
+            subnet_name               = "subnet-03"
+            subnet_ip                 = "10.10.30.0/24"
+            subnet_region             = "us-west1"
+            subnet_flow_logs          = "true"
+            subnet_flow_logs_interval = "INTERVAL_10_MIN"
+            subnet_flow_logs_sampling = 0.7
+            subnet_flow_logs_metadata = "INCLUDE_ALL_METADATA"
+        }
+    ]
+
+    secondary_ranges = {
+        subnet-01 = [
+            {
+                range_name    = "subnet-01-secondary-01"
+                ip_cidr_range = "192.168.64.0/24"
+            },
+        ]
+
+        subnet-02 = []
     }
-  ]
-}
 
-#NAT router
-resource "google_compute_router" "vault_router" {
-  name    = "vault-router"
-  project = var.project_id
-  region  = var.region
-  network = module.test_vpc_module.network_name
-}
-
-# NAT service
-resource "google_compute_router_nat" "vault_nat" {
-  name    = "vault-nat-1"
-  project = var.project_id
-  router  = google_compute_router.vault_router.name
-  region  = var.region
-
-  nat_ip_allocate_option = "AUTO_ONLY"
-
-  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
-
-  log_config {
-    enable = true
-    filter = "ERRORS_ONLY"
-  }
+    routes = [
+        {
+            name                   = "egress-internet"
+            description            = "route through IGW to access internet"
+            destination_range      = "0.0.0.0/0"
+            tags                   = "egress-inet"
+            next_hop_internet      = "true"
+        },
+        {
+            name                   = "app-proxy"
+            description            = "route through proxy to reach app"
+            destination_range      = "10.50.10.0/24"
+            tags                   = "app-proxy"
+            next_hop_instance      = "app-proxy-instance"
+            next_hop_instance_zone = "us-west1-a"
+        },
+    ]
 }
