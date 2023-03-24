@@ -4,6 +4,6 @@ provider "google" {
 }
 
 resource "google_storage_bucket" "static-site" {
-  name          = "naztest87890655366337737"
+  name          = "naztest8789065536633773700"
   location      = "US-CENTRAL1"
 }
