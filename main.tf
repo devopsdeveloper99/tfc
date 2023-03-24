@@ -1,7 +1,8 @@
 provider "google" {
+    project = "playground-s-11-dd33d0a9"
 }
 
-resource "google_project" "my_project" {
-  name       = "My Project99"
-  project_id = "1234567777777"
+resource "google_storage_bucket" "static-site" {
+  name          = "naztest87890655366337737"
+  location      = "EU"
 }
