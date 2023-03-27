@@ -1,5 +1,5 @@
 provider "google" {
-    project = "playground-s-11-763b2634"
+    project = "avian-amulet-378416"
     region = "us-central1-a"
 }
 
