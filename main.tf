@@ -12,7 +12,7 @@ resource "google_storage_bucket_object" "srccode" {
 
 resource "google_cloudfunctions_function" "fun_from_tf" {
   name = "fun-from-tf"
-  runtime = "nodejs14"
+  runtime = "nodejs18"
   description = "This is my first function from terraform script."
 
   available_memory_mb = 128
