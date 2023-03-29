@@ -1,6 +1,6 @@
 
-resource "google_storage_bucket" "fun_bucket" {
-  name = "fun_bucket_tf"
+resource "google_storage_bucket" "fun_bucket6969" {
+  name = "fun_bucket_tf6969"
   location      = "US-CENTRAL1"
 }
 
