@@ -1,12 +1,12 @@
 
-resource "google_storage_bucket" "fun_bucket99991111" {
+resource "google_storage_bucket" "fun_bucket" {
   name = "fun_bucket_tf"
   location      = "US-CENTRAL1"
 }
 
 # resource "google_storage_bucket_object" "srccode" {
 #   name = "index.zip"
-#   bucket = google_storage_bucket.fun_bucket99991111.name
+#   bucket = google_storage_bucket.fun_bucket.name
 #   source = "index.zip"
 # }
 
@@ -16,7 +16,7 @@ resource "google_storage_bucket" "fun_bucket99991111" {
 #   description = "This is my first function from terraform script."
 
 #   available_memory_mb = 128
-#   source_archive_bucket = google_storage_bucket.fun_bucket99991111.name
+#   source_archive_bucket = google_storage_bucket.fun_bucket.name
 #   source_archive_object = google_storage_bucket_object.srccode.name
 
 #   trigger_http = true
